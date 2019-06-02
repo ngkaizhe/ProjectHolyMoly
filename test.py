@@ -55,10 +55,10 @@ class Window(QWidget):
         img = self.image
         output = QImage(img.width(), img.height(), img.format())
 
-        for r in range(img.width()):
+        for w in range(img.width()):
             temp = []
-            for c in range(img.height()):
-                value = img.pixel(r, c)
+            for h in range(img.height()):
+                value = img.pixel(w, h)
                 colors = QColor(value).getRgb()
                 temp.append(colors)
             colors_matrix.append(temp)
@@ -66,10 +66,10 @@ class Window(QWidget):
         # run method here
         result_matrix = Grey(colors_matrix)
 
-        for r in range(output.width()):
-            for c in range(output.height()):
-                color = result_matrix[r][c]
-                output.setPixelColor(r, c, color)
+        for w in range(output.width()):
+            for h in range(output.height()):
+                color = result_matrix[w][h]
+                output.setPixelColor(w, h, color)
 
         result_pixmap = QPixmap().fromImage(output)
         self.label2.setPixmap(result_pixmap)
