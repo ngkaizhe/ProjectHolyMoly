@@ -1,54 +1,80 @@
-#!/usr/bin/python3
-# -*- coding: utf-8 -*-
-
-"""
-ZetCode PyQt5 tutorial
-
-This program creates a skeleton of
-a classic GUI application with a menubar,
-toolbar, statusbar, and a central widget.
-
-Author: Jan Bodnar
-Website: zetcode.com
-Last edited: August 2017
-"""
-
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QLabel, QGridLayout
 import sys
-from PyQt5.QtWidgets import QMainWindow, QTextEdit, QAction, QApplication
-from PyQt5.QtGui import QIcon
+
+from PyQt5.QtGui import QPixmap, QImage, QColor
+from method.Grey import Grey
 
 
-class Example(QMainWindow):
-
+class Window(QWidget):
     def __init__(self):
         super().__init__()
 
-        self.initUI()
+        self.title = "PyQt5 Open File"
+        self.top = 200
+        self.left = 500
+        self.width = 400
+        self.height = 300
 
-    def initUI(self):
-        textEdit = QTextEdit()
-        self.setCentralWidget(textEdit)
+        self.image = QImage()
 
-        exitAct = QAction(QIcon('exit24.png'), 'Exit', self)
-        exitAct.setShortcut('Ctrl+Q')
-        exitAct.setStatusTip('Exit application')
-        exitAct.triggered.connect(self.close)
+        self.InitWindow()
 
-        self.statusBar()
+    def InitWindow(self):
+        self.setWindowTitle(self.title)
+        self.setGeometry(self.left, self.top, self.width, self.height)
 
-        menubar = self.menuBar()
-        fileMenu = menubar.addMenu('&File')
-        fileMenu.addAction(exitAct)
+        layout = QGridLayout()
 
-        toolbar = self.addToolBar('Exit')
-        toolbar.addAction(exitAct)
+        self.btn1 = QPushButton("Set")
+        self.btn1.clicked.connect(self.getImage)
 
-        self.setGeometry(300, 300, 350, 250)
-        self.setWindowTitle('Main window')
+        self.btn2 = QPushButton("Convert")
+        self.btn2.clicked.connect(self.convert)
+
+        layout.addWidget(self.btn1, 0, 0)
+        layout.addWidget(self.btn2, 0, 1)
+
+        self.label1 = QLabel("First Image")
+        layout.addWidget(self.label1, 1, 0)
+
+        self.label2 = QLabel("Second Image")
+        layout.addWidget(self.label2, 1, 1)
+
+        self.setLayout(layout)
+
         self.show()
 
+    def getImage(self):
+        imagePath = 'TestData/test.jpeg'
+        self.image = QImage(imagePath)
+        pixmap = QPixmap(imagePath)
+        self.label1.setPixmap(QPixmap(pixmap))
 
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    ex = Example()
-    sys.exit(app.exec_())
+    def convert(self):
+        colors_matrix = []
+        img = self.image
+        output = QImage(img.width(), img.height(), img.format())
+
+        for r in range(img.width()):
+            temp = []
+            for c in range(img.height()):
+                value = img.pixel(r, c)
+                colors = QColor(value).getRgb()
+                temp.append(colors)
+            colors_matrix.append(temp)
+
+        # run method here
+        result_matrix = Grey(colors_matrix)
+
+        for r in range(output.width()):
+            for c in range(output.height()):
+                color = result_matrix[r][c]
+                output.setPixelColor(r, c, color)
+
+        result_pixmap = QPixmap().fromImage(output)
+        self.label2.setPixmap(result_pixmap)
+
+
+App = QApplication(sys.argv)
+window = Window()
+sys.exit(App.exec())
