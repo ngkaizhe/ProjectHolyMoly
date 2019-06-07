@@ -62,7 +62,7 @@ def recursive_idft(x: List[float]) -> List[complex]:
     first = []
     second = []
     # just return the abs value
-    for k in range(len(even)):
+    for k in range(N // 2):
         first.append((even[k] + T[k]) / 1)
         second.append((even[k] - T[k]) / 1)
 
