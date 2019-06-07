@@ -88,7 +88,7 @@ class UI(QMainWindow):
         source_image_tag.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
 
         self.layout.addWidget(source_image_tag, 0, 0)
-        self.set_graphic_view(QPixmap('testData/test1.bmp'), source_image_background_color, 1, 0)
+        self.set_graphic_view(QPixmap(''), source_image_background_color, 1, 0)
 
         # result image
         result_image_tag = QLabel('Result Image')
