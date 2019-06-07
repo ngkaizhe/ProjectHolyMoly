@@ -2,7 +2,8 @@ from typing import List
 from PyQt5.QtGui import QColor
 
 
-def Grey(colors_matrix: List[List[QColor]]) -> List[List[QColor]]:
+#unused method
+def Grey(colors_matrix: List[List[float]]) -> List[List[float]]:
 
     result_matrix = []
     for w in range(len(colors_matrix)):
