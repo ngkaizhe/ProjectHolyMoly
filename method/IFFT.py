@@ -13,7 +13,7 @@ def IFFT(img: QImage) -> List[List[float]]:
         for w in range(img.width()):
             value = QColor(img.pixel(w, h))
             grey = value.red() * 0.299 + value.green() * 0.587 + value.blue() * 0.144
-            # grey = grey * pow(-1, w + h)  # move to middle
+            grey = grey / pow(-1, w + h)  # move to side>?
             temp.append(grey)
         grey_matrix.append(temp)
 
