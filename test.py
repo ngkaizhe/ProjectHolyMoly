@@ -3,6 +3,9 @@ import sys
 
 from PyQt5.QtGui import QPixmap, QImage, QColor
 from method.Grey import Grey
+from method.FFT import FFT
+from method.DFT import DFT
+from method.IDFT import IDFT
 
 
 class Window(QWidget):
@@ -45,7 +48,7 @@ class Window(QWidget):
         self.show()
 
     def getImage(self):
-        imagePath = 'TestData/test.jpeg'
+        imagePath = 'TestData/test1.bmp'
         self.image = QImage(imagePath)
         pixmap = QPixmap(imagePath)
         self.label1.setPixmap(QPixmap(pixmap))
@@ -55,26 +58,30 @@ class Window(QWidget):
         img = self.image
         output = QImage(img.width(), img.height(), img.format())
 
+        # get the grey value
         for w in range(img.width()):
             temp = []
             for h in range(img.height()):
-                value = img.pixel(w, h)
-                colors = QColor(value).getRgb()
-                temp.append(colors)
+                value = QColor(img.pixel(w, h))
+                grey = value.red() * 0.299 + value.green() * 0.587 + value.blue() * 0.144
+                grey = grey * pow(-1, w + h)
+                temp.append(grey)
             colors_matrix.append(temp)
 
         # run method here
-        result_matrix = Grey(colors_matrix)
+        result_matrix = DFT(colors_matrix)
 
+        # return the answer
         for w in range(output.width()):
             for h in range(output.height()):
-                color = result_matrix[w][h]
-                output.setPixelColor(w, h, color)
+                grey = result_matrix[w][h] if result_matrix[w][h] <= 255 else 255
+                output.setPixelColor(w, h, QColor(grey, grey, grey, 255))
 
         result_pixmap = QPixmap().fromImage(output)
         self.label2.setPixmap(result_pixmap)
 
 
-App = QApplication(sys.argv)
-window = Window()
-sys.exit(App.exec())
+if __name__ == '__main__':
+    App = QApplication(sys.argv)
+    window = Window()
+    sys.exit(App.exec())
