@@ -6,3 +6,8 @@ def isPowerOf2(n: int) -> bool:
         return False
 
     return ceil(log2(n)) == floor(log2(n))
+
+
+# retrieve column from matrix
+def column(matrix, i):
+    return [row[i] for row in matrix]
