@@ -18,6 +18,4 @@ window_height = 900
 source_image_background_color = 'green'
 result_image_background_color = 'gray'
 
-image_need_rescale = False
-
 image_file_type = '(*.bmp *.jpg *.jpeg *.png)'

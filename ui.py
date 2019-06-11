@@ -1,7 +1,8 @@
 from PyQt5.QtWidgets import (QMainWindow, QWidget,
                              QLabel, QApplication, QAction,
                              QSizePolicy, QGraphicsView, QGraphicsScene,
-                             QGraphicsPixmapItem, QGridLayout, QFileDialog)
+                             QGraphicsPixmapItem, QGridLayout, QFileDialog,
+                             QLayoutItem)
 from PyQt5.QtGui import QPixmap
 import sys
 from constant import (method_shortcut, window_width as width,
@@ -11,6 +12,7 @@ from constant import (method_shortcut, window_width as width,
                       image_file_type)
 import os
 from Manager import run_method
+from helper_function import getLargestNumberOfLog2
 
 
 class UI(QMainWindow):
@@ -22,8 +24,8 @@ class UI(QMainWindow):
 
         self.layout = QGridLayout()
 
-        self.open_file_location: str = os.path.dirname(os.path.abspath(__file__))
-        self.save_file_location: str = os.path.dirname(os.path.abspath(__file__))
+        self.open_file_location: str = os.path.dirname(os.path.abspath(__file__)) + '\\testData\\'
+        self.save_file_location: str = os.path.dirname(os.path.abspath(__file__)) + '\\testData\\'
 
         self.source_image_pixmap: QPixmap = None
         self.result_image_pixmap: QPixmap = None
@@ -102,6 +104,11 @@ class UI(QMainWindow):
         self.setCentralWidget(central_widget)
 
     def set_graphic_view(self, image_pixmap: QPixmap, background_color: str, r: int, c: int):
+        # rescaled original image to the proper size, to prevent FFT or IFFT throw exception (log2)
+        max_length = max(image_pixmap.width(), image_pixmap.height())
+        max_log2 = getLargestNumberOfLog2(max_length)
+        image_pixmap = image_pixmap.scaled(max_log2, max_log2)
+
         # save image pixmap
         if image_pixmap:
             if (r, c) == (1, 0):
@@ -110,21 +117,20 @@ class UI(QMainWindow):
                 self.result_image_pixmap = image_pixmap
 
         # not to change the original image_pixmap
+        # rescaled_pixmap just used as showing in ui purpose
         rescaled_pixmap = image_pixmap
 
-        if image_need_rescale:
-            # if image has the larger width then the scene, resize the image
-            other_space_value = 50
-            if rescaled_pixmap.width() > (width / 2 - other_space_value):
-                image_new_height = rescaled_pixmap.height() * ((width / 2 - other_space_value) / rescaled_pixmap.width())
-                rescaled_pixmap = rescaled_pixmap.scaledToHeight(image_new_height)
-                rescaled_pixmap = rescaled_pixmap.scaledToWidth((width / 2 - other_space_value))
+        # get the graphicsView widget for in future using purpose
+        temp_widget: QLayoutItem = self.layout.itemAtPosition(r, c)
 
-            # same things go to height
-            if rescaled_pixmap.height() > (height / 2 - other_space_value):
-                image_new_width = rescaled_pixmap.width() * ((height / 2 - other_space_value) / rescaled_pixmap.height())
-                rescaled_pixmap = rescaled_pixmap.scaledToWidth(image_new_width)
-                rescaled_pixmap = rescaled_pixmap.scaledToHeight(height / 2 - other_space_value)
+        if temp_widget:
+            # check whether the size was larger than the size of graphicsView
+            # if yes, rescale it
+            if rescaled_pixmap.width() > temp_widget.widget().width() or \
+                    rescaled_pixmap.height() > temp_widget.widget().height():
+                min_length = min(temp_widget.widget().width(), temp_widget.widget().height())
+                max_log2 = getLargestNumberOfLog2(min_length)
+                rescaled_pixmap = rescaled_pixmap.scaled(max_log2, max_log2)
 
         # add graphics view
         graphicsView = QGraphicsView()
@@ -139,7 +145,6 @@ class UI(QMainWindow):
         scene.addItem(image_pixmap_item)
 
         # delete the previous position widget
-        temp_widget = self.layout.itemAtPosition(r, c)
         if temp_widget:
             temp_widget.widget().setParent(None)
         self.layout.addWidget(graphicsView, r, c)
