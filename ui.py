@@ -8,10 +8,10 @@ import sys
 from constant import (method_shortcut, window_width as width,
                       window_height as height, window_x_pos, window_y_pos,
                       source_image_background_color,
-                      result_image_background_color, image_need_rescale,
+                      result_image_background_color,
                       image_file_type)
 import os
-from Manager import run_method
+from Manager import Manager
 from helper_function import getLargestNumberOfLog2
 
 
@@ -29,6 +29,8 @@ class UI(QMainWindow):
 
         self.source_image_pixmap: QPixmap = None
         self.result_image_pixmap: QPixmap = None
+
+        self.manager: Manager = Manager()
 
         self.initUI()
 
@@ -150,8 +152,10 @@ class UI(QMainWindow):
         self.layout.addWidget(graphicsView, r, c)
 
     def call_method(self, method_name: str):
-        # print('Current Method: %s' % method_name)
-        result_pixmap = run_method(method_name, self.source_image_pixmap.toImage())
+        # run method
+        self.manager.run_method(method_name)
+        # get image pixmap
+        result_pixmap = self.manager.get_result_img()
 
         # set graphic view in result image box
         if result_pixmap:
@@ -169,6 +173,8 @@ class UI(QMainWindow):
         if filename:
             # print('Image found!')
             self.set_graphic_view(QPixmap(filename), source_image_background_color, 1, 0)
+            # set source for Manager
+            self.manager.set_source_img(self.source_image_pixmap.toImage())
 
     def save_image_dialog(self):
         # print('Saving image')
@@ -187,6 +193,7 @@ class UI(QMainWindow):
             source_pixmap = self.result_image_pixmap
             self.set_graphic_view(source_pixmap, source_image_background_color, 1, 0)
             self.set_graphic_view(QPixmap(''), result_image_background_color, 1, 1)
+            self.manager.result_to_source()
 
 
 if __name__ == '__main__':
