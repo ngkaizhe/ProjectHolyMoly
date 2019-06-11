@@ -3,7 +3,7 @@ from typing import List
 from copy import deepcopy
 
 
-D_cut_off = 20
+D_cut_off = 40
 n = 1
 
 
