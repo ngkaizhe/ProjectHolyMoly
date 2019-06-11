@@ -1,12 +1,13 @@
 from cmath import sqrt
 from typing import List
+from copy import deepcopy
 
 D_cut_off = 40
 n = 1
 
 
 def HF(complex_mat: List[List[complex]]) -> List[List[complex]]:
-    grey_matrix = complex_mat
+    grey_matrix = deepcopy(complex_mat)
 
     # get high filter
     h = len(grey_matrix)
