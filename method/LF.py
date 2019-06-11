@@ -1,25 +1,14 @@
 from cmath import sqrt
 from typing import List
-from PyQt5.QtGui import QColor, QImage
-from math import floor
+from copy import deepcopy
 
 
 D_cut_off = 20
 n = 1
 
 
-def LF(img: QImage) -> List[List[float]]:
-    grey_matrix = []
-
-    # get the grey value
-    for h in range(img.height()):
-        temp = []
-        for w in range(img.width()):
-            value = QColor(img.pixel(w, h))
-            grey = value.red() * 0.299 + value.green() * 0.587 + value.blue() * 0.144
-            # grey = grey * pow(-1, w + h)  # move to middle
-            temp.append(grey)
-        grey_matrix.append(temp)
+def LF(complex_mat: List[List[complex]]) -> List[List[complex]]:
+    grey_matrix = deepcopy(complex_mat)
 
     # get low filter
     h = len(grey_matrix)
