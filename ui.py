@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import (QMainWindow, QWidget,
                              QLabel, QApplication, QAction,
                              QSizePolicy, QGraphicsView, QGraphicsScene,
                              QGraphicsPixmapItem, QGridLayout, QFileDialog,
-                             QLayoutItem)
+                             QLayoutItem, QLineEdit, QHBoxLayout)
 from PyQt5.QtGui import QPixmap
 import sys
 from constant import (method_shortcut, window_width as width,
@@ -31,6 +31,13 @@ class UI(QMainWindow):
         self.result_image_pixmap: QPixmap = None
 
         self.manager: Manager = Manager()
+
+        self.current_method: str = None
+        self.D_cut: int = 10
+        self.n: int = 1
+
+        self.linebox_D_cut: QLineEdit = None
+        self.linebox_n: QLineEdit = None
 
         self.initUI()
 
@@ -98,7 +105,28 @@ class UI(QMainWindow):
         result_image_tag = QLabel('Result Image')
         result_image_tag.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
 
-        self.layout.addWidget(result_image_tag, 0, 1)
+        # D-cut
+        D_cut_tag = QLabel('D-cut: ')
+        D_cut_tag.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+
+        self.linebox_D_cut = QLineEdit('10')
+        self.linebox_D_cut.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+
+        # n
+        n_tag = QLabel('n: ')
+        n_tag.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+
+        self.linebox_n = QLineEdit('1')
+        self.linebox_n.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+
+        hbox = QHBoxLayout()
+        hbox.addWidget(result_image_tag)
+        hbox.addWidget(D_cut_tag)
+        hbox.addWidget(self.linebox_D_cut)
+        hbox.addWidget(n_tag)
+        hbox.addWidget(self.linebox_n)
+
+        self.layout.addLayout(hbox, 0, 1)
         self.set_graphic_view(QPixmap(''), result_image_background_color, 1, 1)
 
         central_widget = QWidget()
@@ -152,8 +180,12 @@ class UI(QMainWindow):
         self.layout.addWidget(graphicsView, r, c)
 
     def call_method(self, method_name: str):
+        self.current_method = method_name
         # run method
-        self.manager.run_method(method_name)
+        D_cut = float(self.linebox_D_cut.text())
+        n = float(self.linebox_n.text())
+
+        self.manager.run_method(self.current_method, D_cut, n)
         # get image pixmap
         result_pixmap = self.manager.get_result_img()
 

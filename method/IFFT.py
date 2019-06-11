@@ -3,7 +3,7 @@ from typing import List
 from method.help_function import isPowerOf2, column
 
 
-def IFFT(complex_mat: List[List[complex]]) -> List[List[complex]]:
+def IFFT(complex_mat: List[List[complex]], D_cut, n) -> List[List[complex]]:
     # do for row first
     row_FFT_list = []
     for i in complex_mat:

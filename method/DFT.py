@@ -2,7 +2,7 @@ from cmath import exp, pi, sqrt
 from typing import List
 
 
-def DFT(complex_mat: List[List[complex]]) -> List[List[complex]]:
+def DFT(complex_mat: List[List[complex]], D_cut, n) -> List[List[complex]]:
     f = complex_mat
     M = len(f)
     N = len(f[0])

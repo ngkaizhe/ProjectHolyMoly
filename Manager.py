@@ -18,28 +18,6 @@ method_shortcut[3][0]: HF,
 method_shortcut[4][0]: DFT,
 method_shortcut[5][0]: IDFT,
 }
-# def run_method(method_name: str, img: QImage) -> QPixmap:
-#     output = QImage(img.width(), img.height(), img.format())
-#
-#     # run method here
-#     result_matrix = function_dict[method_name](img)
-#
-#     # means function are not done yet
-#     if result_matrix is None:
-#         return
-#
-#     # return the answer
-#     for h in range(output.height()):
-#         for w in range(output.width()):
-#             if result_matrix[w][h] > 255:
-#                 result_matrix[w][h] = 255
-#             elif result_matrix[w][h] < 0:
-#                 result_matrix[w][h] = 0
-#             grey = result_matrix[w][h]
-#             output.setPixelColor(w, h, QColor(grey, grey, grey, 255))
-#
-#     result_pixmap = QPixmap().fromImage(output)
-#     return result_pixmap
 
 
 class Manager(object):
@@ -89,7 +67,7 @@ class Manager(object):
         # clear result complex mat
         self.result_complex_mat = None
 
-    def run_method(self, method_name: str):
-        self.result_complex_mat = function_dict[method_name](self.source_complex_mat)
+    def run_method(self, method_name: str, D_cut: float, n: float):
+        self.result_complex_mat = function_dict[method_name](self.source_complex_mat, D_cut, n)
 
 

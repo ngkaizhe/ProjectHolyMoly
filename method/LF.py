@@ -3,11 +3,7 @@ from typing import List
 from copy import deepcopy
 
 
-D_cut_off = 40
-n = 1
-
-
-def LF(complex_mat: List[List[complex]]) -> List[List[complex]]:
+def LF(complex_mat: List[List[complex]], D_cut_off, n) -> List[List[complex]]:
     grey_matrix = deepcopy(complex_mat)
 
     # get low filter
@@ -20,7 +16,7 @@ def LF(complex_mat: List[List[complex]]) -> List[List[complex]]:
             u = x - h / 2
             v = y - w / 2
 
-            filter = 1 / 1 + pow(sqrt(u * u + v * v) / D_cut_off, 2 * n)
+            filter = 1 / (1 + pow(sqrt(u * u + v * v) / D_cut_off, 2 * n))
             grey_matrix[x][y] *= filter
             grey_matrix[x][y] = grey_matrix[x][y]
 
